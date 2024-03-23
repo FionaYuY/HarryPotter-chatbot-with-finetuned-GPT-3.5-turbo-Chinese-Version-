@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HarryPotter Chatbot</title>
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body, html { height: 100%; margin: 0; padding: 0; }
+        .chat-container { max-height: calc(100% - 80px); overflow-y: auto; position: absolute; bottom: 60px; width: 100%; }
+        .chat-message { padding: 10px; margin: 5px; border-radius: 10px; }
+        .user-message { background-color: #dcf8c6; float: right; }
+        .bot-message { background-color: #ebebeb; float: left; }
+        .bot-avatar { width: 40px; height: 40px; border-radius: 50%; }
+        .clear-both { clear: both; }
+        #chatForm { position: fixed; bottom: 0; width: 100%; background-color: white; padding: 10px; }
+    </style>
+</head>
+<body>
+    <div id="chatBox" class="chat-container mt-5 p-3 border">
+    </div>
+    <form id="chatForm" class="form-inline">
+        <input type="text" id="messageInput" class="form-control mr-sm-2 flex-grow-1" placeholder="chatbot with Harry Potter.">
+        <button type="submit" class="btn btn-primary">submit</button>
+    </form>
+
+    
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#chatForm').on('submit', function(e) {
+                e.preventDefault();
+                const message = $('#messageInput').val().trim();
+                if (message) {
+                    displayMessage(message, 'user');
+                    $('#messageInput').val('');
+                    $.ajax({
+                        type: "POST",
+                        url: "/api",
+                        contentType: "application/json",
+                        data: JSON.stringify({ message: message }),
+                        success: function(response) {
+                           
+                            displayMessage(response.message, 'bot');
+                        },
+                        error: function() {
+                            alert('message error');
+                        }
+                    });
+                }
+            });
+        });
+
+        function displayMessage(message, sender) {
+            let messageHtml = '';
+            if (sender === 'user') {
+                messageHtml = '<div class="chat-message user-message">' + message + '</div><div class="clear-both"></div>';
+            } else {
+                messageHtml = '<div class="chat-message bot-message"><img src="/static/gryffindor.jpg" class="bot-avatar" alt="���嚙踝蕭嚙賢�嗥��"> ' + message + '</div><div class="clear-both"></div>';
+            }
+            $('#chatBox').append(messageHtml);
+            $('#chatBox').scrollTop($('#chatBox')[0].scrollHeight);
+        }
+    </script>
+</body>
+</html>
