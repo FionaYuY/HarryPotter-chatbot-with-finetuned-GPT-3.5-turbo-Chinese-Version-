@@ -64,5 +64,9 @@
 2. 全部的hyperparameters都是auto
 3. 不知道自己是誰了
 
+## Finetuned Version 6:
+1. 使用character dataset，並切為Fintuned V
+
+## Finetuned Version 7:
 
 ## finetuned version 3比4好
